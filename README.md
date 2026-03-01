@@ -1,36 +1,95 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Shelf
 
-## Getting Started
+A minimal digital product storefront. Admin lists products, visitors pay via Stripe Checkout, and receive time-limited download links. No buyer accounts — email-based delivery.
 
-First, run the development server:
+## Features
+
+- Admin dashboard — create and manage digital products
+- Stripe Checkout integration with webhook-driven order completion
+- Time-limited download links (48h expiry, 3 downloads max)
+- Light/dark mode toggle
+- Fully responsive design
+
+## Tech Stack
+
+- **Next.js 14** — App Router, TypeScript strict
+- **Drizzle ORM + Turso** — SQLite at the edge
+- **Auth.js v5** — admin-only credentials auth
+- **Stripe** — Checkout Sessions + webhooks
+- **Tailwind CSS** — utility-first styling
+- **pnpm** — package manager
+
+## Setup
+
+### 1. Install dependencies
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+pnpm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 2. Environment variables
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Copy `.env.example` to `.env.local` and fill in the values:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+cp .env.example .env.local
+```
 
-## Learn More
+| Variable | Description |
+|----------|-------------|
+| `DATABASE_URL` | Turso database URL (`libsql://...`) |
+| `DATABASE_AUTH_TOKEN` | Turso auth token |
+| `AUTH_SECRET` | Random string for Auth.js JWT signing |
+| `STRIPE_SECRET_KEY` | Stripe secret key (`sk_test_...`) |
+| `STRIPE_PUBLISHABLE_KEY` | Stripe publishable key (`pk_test_...`) |
+| `STRIPE_WEBHOOK_SECRET` | Stripe webhook signing secret (`whsec_...`) |
+| `NEXT_PUBLIC_BASE_URL` | Your app URL (e.g. `http://localhost:3000`) |
 
-To learn more about Next.js, take a look at the following resources:
+### 3. Database
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Generate and run migrations:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```bash
+pnpm db:generate
+pnpm db:migrate
+```
 
-## Deploy on Vercel
+Seed the admin user:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```bash
+pnpm db:seed
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Default admin credentials: `admin@shelf.dev` / `admin123`
+
+### 4. Stripe webhook
+
+For local development, use the Stripe CLI to forward webhooks:
+
+```bash
+stripe listen --forward-to localhost:3000/api/webhooks/stripe
+```
+
+Copy the webhook signing secret it prints to `STRIPE_WEBHOOK_SECRET` in `.env.local`.
+
+### 5. Run
+
+```bash
+pnpm dev
+```
+
+## Architecture
+
+```
+src/
+├── app/           → Pages and API routes (App Router)
+├── db/            → Schema, migrations, seed script
+└── lib/           → Business logic (products, orders, downloads, stripe, checkout)
+```
+
+All database queries live in `src/lib/`, never in components or routes. Lib functions return `{ data, error }` — never throw.
+
+## Live URL
+
+<!-- Replace with your deployed URL -->
+`https://your-app.vercel.app`

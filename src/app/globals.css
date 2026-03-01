@@ -3,21 +3,68 @@
 @tailwind utilities;
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --bg: #ffffff;
+  --fg: #171717;
+  --fg-secondary: #333333;
+  --muted: #6b7280;
+  --border: #e5e7eb;
+  --card-bg: #ffffff;
+  --input-bg: #ffffff;
+  --accent: #0070f3;
+  --dot-color: rgba(0, 0, 0, 0.035);
+  --gradient-from: rgba(0, 112, 243, 0.025);
+  --gradient-to: rgba(168, 85, 247, 0.015);
+  --placeholder-bg: #f5f5f5;
+  --placeholder-icon: #d4d4d4;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+.dark {
+  --bg: #0a0a0a;
+  --fg: #ededed;
+  --fg-secondary: #999999;
+  --muted: #a1a1aa;
+  --border: #1e1e1e;
+  --card-bg: #111111;
+  --input-bg: #111111;
+  --accent: #0070f3;
+  --dot-color: rgba(255, 255, 255, 0.025);
+  --gradient-from: rgba(0, 112, 243, 0.04);
+  --gradient-to: rgba(168, 85, 247, 0.03);
+  --placeholder-bg: #161616;
+  --placeholder-icon: #2a2a2a;
 }
 
 body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  color: var(--fg);
+  background: var(--bg);
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+}
+
+.dot-grid {
+  background-image: radial-gradient(var(--dot-color) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+.hero-gradient {
+  background: radial-gradient(ellipse 80% 60% at 50% 0%, var(--gradient-from), transparent),
+              radial-gradient(ellipse 60% 50% at 80% 0%, var(--gradient-to), transparent);
+}
+
+.gradient-text {
+  background: linear-gradient(135deg, #0070f3 0%, #7c3aed 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.rainbow-divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(0, 112, 243, 0.3), rgba(124, 58, 237, 0.3), rgba(236, 72, 153, 0.2), transparent);
+}
+
+.spinner {
+  border-color: var(--border);
+  border-top-color: var(--fg);
 }
 
 @layer utilities {
