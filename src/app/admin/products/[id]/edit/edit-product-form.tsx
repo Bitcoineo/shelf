@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { ImageUpload } from "../../image-upload";
 
 type Product = {
   id: string;
@@ -18,6 +19,9 @@ export function EditProductForm({ product }: { product: Product }) {
   const [deleting, setDeleting] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  const [previewImageUrl, setPreviewImageUrl] = useState<string | null>(
+    product.previewImageUrl
+  );
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -44,7 +48,7 @@ export function EditProductForm({ product }: { product: Product }) {
         description: form.get("description") as string,
         priceInCents,
         fileUrl: form.get("fileUrl") as string,
-        previewImageUrl: (form.get("previewImageUrl") as string) || null,
+        previewImageUrl,
       }),
     });
 
@@ -143,18 +147,7 @@ export function EditProductForm({ product }: { product: Product }) {
           />
         </label>
 
-        <label className="block">
-          <span className="text-xs font-medium text-muted">
-            Preview Image URL{" "}
-            <span className="text-muted/40">(optional)</span>
-          </span>
-          <input
-            name="previewImageUrl"
-            type="url"
-            defaultValue={product.previewImageUrl ?? ""}
-            className={inputClass}
-          />
-        </label>
+        <ImageUpload value={previewImageUrl} onChange={setPreviewImageUrl} />
 
         <button
           type="submit"

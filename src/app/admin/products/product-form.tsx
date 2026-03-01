@@ -2,12 +2,14 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { ImageUpload } from "./image-upload";
 
 export function ProductForm() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  const [previewImageUrl, setPreviewImageUrl] = useState<string | null>(null);
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -34,7 +36,7 @@ export function ProductForm() {
         description: form.get("description") as string,
         priceInCents,
         fileUrl: form.get("fileUrl") as string,
-        previewImageUrl: (form.get("previewImageUrl") as string) || null,
+        previewImageUrl,
       }),
     });
 
@@ -48,6 +50,7 @@ export function ProductForm() {
 
     setSuccess(`Created "${json.data.name}"`);
     e.currentTarget.reset();
+    setPreviewImageUrl(null);
     router.refresh();
   }
 
@@ -103,18 +106,7 @@ export function ProductForm() {
         />
       </label>
 
-      <label className="block">
-        <span className="text-xs font-medium text-muted">
-          Preview Image URL{" "}
-          <span className="text-muted/40">(optional)</span>
-        </span>
-        <input
-          name="previewImageUrl"
-          type="url"
-          placeholder="https://..."
-          className={inputClass}
-        />
-      </label>
+      <ImageUpload value={previewImageUrl} onChange={setPreviewImageUrl} />
 
       <button
         type="submit"
