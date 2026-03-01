@@ -14,11 +14,14 @@ I wanted to understand how a real payment flow works end to end: Stripe Checkout
 
 ## Features
 
-- **Admin dashboard** Create and manage digital products with file URLs and pricing
+- **Admin dashboard** Create, edit, and soft-delete digital products with Stripe sync
+- **Sales dashboard** Revenue summary cards, 30-day revenue bar chart, top products, recent orders
+- **Order history** Filterable by status (completed/pending/failed), searchable by customer email
 - **Stripe Checkout** Full payment flow with Checkout Sessions
 - **Webhook-driven completion** Orders complete via verified Stripe, not redirect
 - **Time-limited downloads** 48h expiry, 3 downloads max per purchase, token-based
 - **No buyer accounts** Customers receive a download link directly, no registration
+- **Product editing** Edit name, description, price, URLs — price changes create new Stripe prices and archive old ones
 - **Admin auth** Credentials-only login via Auth.js v5, no public signup
 - **Dark / Light theme** System preference with toggle
 
