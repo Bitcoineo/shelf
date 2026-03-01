@@ -21,7 +21,19 @@ export default async function AdminProductsPage() {
           <div className="flex items-center gap-3">
             <ShelfLogo />
             <span className="text-border">/</span>
-            <span className="text-sm text-muted">Admin</span>
+            <Link
+              href="/admin"
+              className="text-sm text-muted hover:text-foreground transition-colors duration-200"
+            >
+              Dashboard
+            </Link>
+            <span className="text-sm text-foreground">Products</span>
+            <Link
+              href="/admin/orders"
+              className="text-sm text-muted hover:text-foreground transition-colors duration-200"
+            >
+              Orders
+            </Link>
           </div>
           <div className="flex items-center gap-4">
             <Link

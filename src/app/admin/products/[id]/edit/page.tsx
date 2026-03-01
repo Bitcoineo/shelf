@@ -30,10 +30,22 @@ export default async function EditProductPage({
             <ShelfLogo />
             <span className="text-border">/</span>
             <Link
+              href="/admin"
+              className="text-sm text-muted hover:text-foreground transition-colors duration-200"
+            >
+              Dashboard
+            </Link>
+            <Link
               href="/admin/products"
               className="text-sm text-muted hover:text-foreground transition-colors duration-200"
             >
-              Admin
+              Products
+            </Link>
+            <Link
+              href="/admin/orders"
+              className="text-sm text-muted hover:text-foreground transition-colors duration-200"
+            >
+              Orders
             </Link>
             <span className="text-border">/</span>
             <span className="text-sm text-muted">Edit</span>
