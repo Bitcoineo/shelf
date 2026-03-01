@@ -2,7 +2,11 @@ import { nanoid } from "nanoid";
 import { eq, desc } from "drizzle-orm";
 import { getDb } from "@/db";
 import { products } from "@/db/schema";
-import { createStripeProduct } from "./stripe";
+import {
+  createStripeProduct,
+  updateStripeProduct,
+  deactivateStripeProduct,
+} from "./stripe";
 
 type CreateProductInput = {
   name: string;
@@ -103,6 +107,106 @@ export async function getProductById(
       .limit(1);
 
     return { data: product ?? null };
+  } catch (err) {
+    const message = err instanceof Error ? err.message : "Database error";
+    return { error: message };
+  }
+}
+
+// ─── Update ─────────────────────────────────────────────────────────────────
+
+export async function updateProduct(
+  id: string,
+  input: CreateProductInput
+): Promise<{ data?: Product; error?: string }> {
+  if (!input.name.trim()) {
+    return { error: "Name is required" };
+  }
+  if (!input.description.trim()) {
+    return { error: "Description is required" };
+  }
+  if (!Number.isInteger(input.priceInCents) || input.priceInCents < 0) {
+    return { error: "Price must be a non-negative integer (cents)" };
+  }
+  if (!input.fileUrl.trim()) {
+    return { error: "File URL is required" };
+  }
+
+  const { data: current, error: fetchError } = await getProductById(id);
+  if (fetchError) return { error: fetchError };
+  if (!current) return { error: "Product not found" };
+
+  if (!current.stripeProductId || !current.stripePriceId) {
+    return { error: "Product is missing Stripe IDs" };
+  }
+
+  const priceChanged = input.priceInCents !== current.priceInCents;
+
+  const stripeResult = await updateStripeProduct({
+    stripeProductId: current.stripeProductId,
+    name: input.name.trim(),
+    description: input.description.trim(),
+    currentStripePriceId: current.stripePriceId,
+    newPriceInCents: priceChanged ? input.priceInCents : null,
+  });
+
+  if (stripeResult.error) {
+    return { error: `Stripe: ${stripeResult.error}` };
+  }
+
+  try {
+    const db = getDb();
+
+    const [updated] = await db
+      .update(products)
+      .set({
+        name: input.name.trim(),
+        description: input.description.trim(),
+        priceInCents: input.priceInCents,
+        fileUrl: input.fileUrl.trim(),
+        previewImageUrl: input.previewImageUrl?.trim() || null,
+        stripePriceId: stripeResult.data!.stripePriceId,
+        updatedAt: new Date(),
+      })
+      .where(eq(products.id, id))
+      .returning();
+
+    return { data: updated };
+  } catch (err) {
+    const message = err instanceof Error ? err.message : "Database error";
+    return { error: message };
+  }
+}
+
+// ─── Soft Delete ────────────────────────────────────────────────────────────
+
+export async function softDeleteProduct(
+  id: string
+): Promise<{ data?: Product; error?: string }> {
+  const { data: current, error: fetchError } = await getProductById(id);
+  if (fetchError) return { error: fetchError };
+  if (!current) return { error: "Product not found" };
+
+  if (current.stripeProductId) {
+    const stripeError = await deactivateStripeProduct(
+      current.stripeProductId,
+      current.stripePriceId
+    );
+    if (stripeError.error) {
+      return { error: `Stripe: ${stripeError.error}` };
+    }
+  }
+
+  try {
+    const db = getDb();
+
+    const [updated] = await db
+      .update(products)
+      .set({ isActive: 0, updatedAt: new Date() })
+      .where(eq(products.id, id))
+      .returning();
+
+    return { data: updated };
   } catch (err) {
     const message = err instanceof Error ? err.message : "Database error";
     return { error: message };

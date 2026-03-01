@@ -41,3 +41,63 @@ export async function createStripeProduct(
     return { error: message };
   }
 }
+
+export async function updateStripeProduct(input: {
+  stripeProductId: string;
+  name: string;
+  description: string;
+  currentStripePriceId: string;
+  newPriceInCents: number | null;
+}): Promise<{ data?: { stripePriceId: string }; error?: string }> {
+  try {
+    const stripe = getStripe();
+
+    await stripe.products.update(input.stripeProductId, {
+      name: input.name,
+      description: input.description,
+    });
+
+    if (input.newPriceInCents !== null) {
+      const newPrice = await stripe.prices.create({
+        product: input.stripeProductId,
+        unit_amount: input.newPriceInCents,
+        currency: "usd",
+      });
+
+      // Archive old price (non-critical — don't fail if this errors)
+      try {
+        await stripe.prices.update(input.currentStripePriceId, {
+          active: false,
+        });
+      } catch {
+        // Old price stays active — harmless
+      }
+
+      return { data: { stripePriceId: newPrice.id } };
+    }
+
+    return { data: { stripePriceId: input.currentStripePriceId } };
+  } catch (err) {
+    const message = err instanceof Error ? err.message : "Unknown Stripe error";
+    return { error: message };
+  }
+}
+
+export async function deactivateStripeProduct(
+  stripeProductId: string,
+  stripePriceId: string | null
+): Promise<{ error?: string }> {
+  try {
+    const stripe = getStripe();
+
+    if (stripePriceId) {
+      await stripe.prices.update(stripePriceId, { active: false });
+    }
+    await stripe.products.update(stripeProductId, { active: false });
+
+    return {};
+  } catch (err) {
+    const message = err instanceof Error ? err.message : "Unknown Stripe error";
+    return { error: message };
+  }
+}

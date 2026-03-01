@@ -83,9 +83,17 @@ export default async function AdminProductsPage() {
                         </span>
                       </div>
                     </div>
-                    <div className="text-[10px] font-mono text-muted/50 text-right shrink-0 ml-6">
-                      <p>{p.stripeProductId}</p>
-                      <p>{p.stripePriceId}</p>
+                    <div className="flex items-center gap-4 shrink-0 ml-6">
+                      <Link
+                        href={`/admin/products/${p.id}/edit`}
+                        className="text-xs text-muted hover:text-foreground transition-colors duration-200"
+                      >
+                        Edit
+                      </Link>
+                      <div className="text-[10px] font-mono text-muted/50 text-right">
+                        <p>{p.stripeProductId}</p>
+                        <p>{p.stripePriceId}</p>
+                      </div>
                     </div>
                   </div>
                 );
