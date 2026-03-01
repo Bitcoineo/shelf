@@ -33,19 +33,20 @@ export default async function Home() {
             </div>
           </div>
         </nav>
-        <div className="max-w-6xl mx-auto px-6 py-12 text-center">
-          <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tighter mb-2 text-[var(--fg-secondary)]">
+        <div className="max-w-6xl mx-auto px-6 py-24 text-center">
+          <h1 className="text-5xl sm:text-6xl font-extrabold tracking-tighter mb-4 text-[var(--fg-secondary)]">
             Digital products,{" "}
             <span className="gradient-text">instant delivery</span>
           </h1>
-          <p className="text-sm text-muted max-w-xl mx-auto">
+          <p className="text-lg text-muted max-w-xl mx-auto">
             Premium digital goods. Pay once, download instantly.
           </p>
         </div>
+        <div className="rainbow-divider" />
       </section>
 
       {/* Products */}
-      <main className="flex-1 max-w-6xl mx-auto w-full px-6 py-8">
+      <main className="flex-1 max-w-6xl mx-auto w-full px-6 py-16">
         {error && (
           <p className="text-red-500 text-sm mb-6 font-mono">{error}</p>
         )}
@@ -57,14 +58,14 @@ export default async function Home() {
         )}
 
         {products && products.length > 0 && (
-          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 justify-items-center">
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 justify-items-center">
             {products.map((product) => (
               <div
                 key={product.id}
                 className="group w-full border border-border rounded-md overflow-hidden flex flex-col bg-card-bg hover:border-[var(--muted)] hover:shadow-[0_2px_8px_rgba(0,0,0,0.04)] dark:hover:shadow-[0_2px_8px_rgba(0,0,0,0.2)] transition-all duration-200"
               >
                 {product.previewImageUrl ? (
-                  <div className="h-40 bg-background">
+                  <div className="aspect-video bg-background">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
                       src={product.previewImageUrl}
@@ -73,7 +74,7 @@ export default async function Home() {
                     />
                   </div>
                 ) : (
-                  <div className="h-40 bg-[var(--placeholder-bg)] flex items-center justify-center">
+                  <div className="aspect-video bg-[var(--placeholder-bg)] flex items-center justify-center">
                     <svg
                       width="32"
                       height="32"
@@ -91,18 +92,18 @@ export default async function Home() {
                     </svg>
                   </div>
                 )}
-                <div className="p-4 flex flex-col flex-1">
+                <div className="p-5 flex flex-col flex-1">
                   <h3 className="font-semibold text-foreground">
                     {product.name}
                   </h3>
                   <p className="text-sm text-muted mt-1 flex-1 leading-relaxed">
                     {product.description}
                   </p>
-                  <div className="mt-3 flex items-center justify-between gap-3">
+                  <div className="mt-5 flex items-center justify-between gap-3">
                     <span className="text-sm font-mono text-muted shrink-0">
                       ${(product.priceInCents / 100).toFixed(2)}
                     </span>
-                    <BuyButton productId={product.id} priceInCents={product.priceInCents} productName={product.name} />
+                    <BuyButton productId={product.id} priceInCents={product.priceInCents} />
                   </div>
                 </div>
               </div>
@@ -113,7 +114,7 @@ export default async function Home() {
 
       {/* Footer */}
       <footer className="border-t border-border">
-        <div className="max-w-6xl mx-auto px-6 py-3 flex items-center justify-center gap-2.5 text-[11px] text-muted/60">
+        <div className="max-w-6xl mx-auto px-6 py-5 flex items-center justify-center gap-2.5 text-[11px] text-muted/60">
             <span>Built by Bitcoineo</span>
             <a
               href="https://github.com/Bitcoineo"
