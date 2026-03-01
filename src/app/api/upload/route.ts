@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { writeFile } from "fs/promises";
-import path from "path";
+import { put } from "@vercel/blob";
 import { nanoid } from "nanoid";
 import { auth } from "@/auth";
 
@@ -48,13 +47,9 @@ export async function POST(request: NextRequest) {
 
   try {
     const filename = `${nanoid()}${ext}`;
-    const uploadsDir = path.join(process.cwd(), "public", "uploads");
-    const filePath = path.join(uploadsDir, filename);
+    const blob = await put(filename, file, { access: "public" });
 
-    const buffer = Buffer.from(await file.arrayBuffer());
-    await writeFile(filePath, buffer);
-
-    return NextResponse.json({ url: `/uploads/${filename}` });
+    return NextResponse.json({ url: blob.url });
   } catch (err) {
     const message = err instanceof Error ? err.message : "Upload failed";
     return NextResponse.json({ error: message }, { status: 500 });
