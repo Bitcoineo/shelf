@@ -42,11 +42,10 @@ export default async function Home() {
             Premium digital goods. Pay once, download instantly.
           </p>
         </div>
-        <div className="rainbow-divider" />
       </section>
 
       {/* Products */}
-      <main className="flex-1 max-w-6xl mx-auto w-full px-6 py-16">
+      <main className="flex-1 max-w-6xl mx-auto w-full px-6 py-10">
         {error && (
           <p className="text-red-500 text-sm mb-6 font-mono">{error}</p>
         )}
