@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 import { auth } from "@/auth";
 import { createProduct } from "@/lib/products";
 
@@ -42,6 +43,9 @@ export async function POST(request: NextRequest) {
   if (result.error) {
     return NextResponse.json({ error: result.error }, { status: 400 });
   }
+
+  revalidatePath("/admin/products");
+  revalidatePath("/");
 
   return NextResponse.json({ data: result.data }, { status: 201 });
 }
