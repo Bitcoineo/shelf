@@ -99,11 +99,11 @@ export default async function Home() {
                   <p className="text-sm text-muted mt-1 flex-1 leading-relaxed">
                     {product.description}
                   </p>
-                  <div className="mt-5 flex items-center justify-between">
-                    <span className="text-sm font-mono text-muted">
+                  <div className="mt-5 flex items-center justify-between gap-3">
+                    <span className="text-sm font-mono text-muted shrink-0">
                       ${(product.priceInCents / 100).toFixed(2)}
                     </span>
-                    <BuyButton productId={product.id} />
+                    <BuyButton productId={product.id} priceInCents={product.priceInCents} />
                   </div>
                 </div>
               </div>
