@@ -35,11 +35,11 @@ export default async function Home() {
         </nav>
         <div className="max-w-6xl mx-auto px-6 py-24 text-center">
           <h1 className="text-5xl sm:text-6xl font-extrabold tracking-tighter mb-4 text-[var(--fg-secondary)]">
-            Digital products,{" "}
-            <span className="gradient-text">instant delivery</span>
+            Buy once. Download now.{" "}
+            <span className="gradient-text">Keep forever.</span>
           </h1>
           <p className="text-lg text-muted max-w-xl mx-auto">
-            Premium digital goods. Pay once, download instantly.
+            No subscriptions. No accounts. Just the file you came for.
           </p>
         </div>
       </section>

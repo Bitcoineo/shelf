@@ -15,7 +15,7 @@ const geistMono = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "Shelf — Digital Products",
+  title: "Shelf — Buy once. Download now.",
   description: "Buy and instantly download digital products.",
 };
 
