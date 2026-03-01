@@ -5,7 +5,6 @@ import { getProductById } from "@/lib/products";
 import { EditProductForm } from "./edit-product-form";
 import { SignOutButton } from "../../sign-out-button";
 import { ShelfLogo } from "@/app/shelf-logo";
-import { ThemeToggle } from "@/app/theme-toggle";
 
 export const dynamic = "force-dynamic";
 
@@ -58,7 +57,6 @@ export default async function EditProductPage({
               Store
             </Link>
             <SignOutButton />
-            <ThemeToggle />
           </div>
         </div>
       </nav>

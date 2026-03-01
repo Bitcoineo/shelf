@@ -4,7 +4,6 @@ import { getOrderCountsByProductIds } from "@/lib/orders";
 import { ProductForm } from "./product-form";
 import { SignOutButton } from "./sign-out-button";
 import { ShelfLogo } from "@/app/shelf-logo";
-import { ThemeToggle } from "@/app/theme-toggle";
 
 export const dynamic = "force-dynamic";
 
@@ -43,7 +42,6 @@ export default async function AdminProductsPage() {
               Store
             </Link>
             <SignOutButton />
-            <ThemeToggle />
           </div>
         </div>
       </nav>

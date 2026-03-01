@@ -21,9 +21,9 @@ I wanted to understand how a real payment flow works end to end: Stripe Checkout
 - **Webhook-driven completion** Orders complete via verified Stripe, not redirect
 - **Time-limited downloads** 48h expiry, 3 downloads max per purchase, token-based
 - **No buyer accounts** Customers receive a download link directly, no registration
-- **Product editing** Edit name, description, price, URLs — price changes create new Stripe prices and archive old ones
+- **Image uploads** Drag-and-drop product preview images via Vercel Blob storage
+- **Product editing** Edit name, description, price, preview image — price changes create new Stripe prices and archive old ones
 - **Admin auth** Credentials-only login via Auth.js v5, no public signup
-- **Dark / Light theme** System preference with toggle
 
 ## Setup
 
@@ -38,6 +38,7 @@ Fill in your .env.local:
     STRIPE_SECRET_KEY=         # sk_test_...
     STRIPE_PUBLISHABLE_KEY=    # pk_test_...
     STRIPE_WEBHOOK_SECRET=     # whsec_... (from Stripe CLI or dashboard)
+    BLOB_READ_WRITE_TOKEN=     # Vercel Blob token (for image uploads)
     NEXT_PUBLIC_BASE_URL=      # http://localhost:3000 for dev
 
 Run migrations and seed the admin user:

@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { ShelfLogo } from "@/app/shelf-logo";
-import { ThemeToggle } from "@/app/theme-toggle";
 
 const messages: Record<string, { title: string; description: string }> = {
   expired: {
@@ -32,7 +31,6 @@ export default function DownloadErrorPage({
       <nav className="border-b border-border">
         <div className="max-w-6xl mx-auto px-6 h-14 flex items-center justify-between">
           <ShelfLogo />
-          <ThemeToggle />
         </div>
       </nav>
       <div className="flex-1 flex flex-col items-center justify-center px-4">

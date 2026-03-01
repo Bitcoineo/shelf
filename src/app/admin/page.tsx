@@ -9,7 +9,6 @@ import {
 } from "@/lib/orders";
 import { SignOutButton } from "./products/sign-out-button";
 import { ShelfLogo } from "@/app/shelf-logo";
-import { ThemeToggle } from "@/app/theme-toggle";
 
 export const dynamic = "force-dynamic";
 
@@ -62,7 +61,6 @@ export default async function AdminDashboardPage() {
               Store
             </Link>
             <SignOutButton />
-            <ThemeToggle />
           </div>
         </div>
       </nav>

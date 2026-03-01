@@ -3,7 +3,6 @@
 import { useEffect, useState, useCallback } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { ThemeToggle } from "@/app/theme-toggle";
 import { ShelfLogo } from "@/app/shelf-logo";
 
 type OrderStatus = "pending" | "completed" | "failed";
@@ -31,7 +30,6 @@ function Shell({ children }: { children: React.ReactNode }) {
       <nav>
         <div className="max-w-6xl mx-auto px-6 h-14 flex items-center justify-between">
           <ShelfLogo />
-          <ThemeToggle />
         </div>
       </nav>
       <div className="flex-1 flex flex-col items-center justify-center px-4">

@@ -18,21 +18,6 @@
   --placeholder-icon: #d4d4d4;
 }
 
-.dark {
-  --bg: #0a0a0a;
-  --fg: #ededed;
-  --fg-secondary: #999999;
-  --muted: #a1a1aa;
-  --border: #1e1e1e;
-  --card-bg: #111111;
-  --input-bg: #111111;
-  --accent: #0070f3;
-  --dot-color: rgba(255, 255, 255, 0.025);
-  --gradient-from: rgba(0, 112, 243, 0.04);
-  --gradient-to: rgba(168, 85, 247, 0.03);
-  --placeholder-bg: #161616;
-  --placeholder-icon: #2a2a2a;
-}
 
 body {
   color: var(--fg);

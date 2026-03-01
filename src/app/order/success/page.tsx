@@ -1,6 +1,5 @@
 import { Suspense } from "react";
 import { ShelfLogo } from "@/app/shelf-logo";
-import { ThemeToggle } from "@/app/theme-toggle";
 import { OrderStatusPoller } from "./order-status";
 
 function LoadingFallback() {
@@ -9,7 +8,6 @@ function LoadingFallback() {
       <nav>
         <div className="max-w-6xl mx-auto px-6 h-14 flex items-center justify-between">
           <ShelfLogo />
-          <ThemeToggle />
         </div>
       </nav>
       <div className="flex-1 flex flex-col items-center justify-center px-4">

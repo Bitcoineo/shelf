@@ -2,7 +2,6 @@ import Link from "next/link";
 import { getActiveProducts } from "@/lib/products";
 import { auth } from "@/auth";
 import { BuyButton } from "./buy-button";
-import { ThemeToggle } from "./theme-toggle";
 import { ShelfLogo } from "./shelf-logo";
 
 export const dynamic = "force-dynamic";
@@ -29,7 +28,6 @@ export default async function Home() {
                   Admin
                 </Link>
               )}
-              <ThemeToggle />
             </div>
           </div>
         </nav>
@@ -61,7 +59,7 @@ export default async function Home() {
             {products.map((product) => (
               <div
                 key={product.id}
-                className="group w-full border border-border rounded-md overflow-hidden flex flex-col bg-card-bg hover:border-[var(--muted)] hover:shadow-[0_2px_8px_rgba(0,0,0,0.04)] dark:hover:shadow-[0_2px_8px_rgba(0,0,0,0.2)] transition-all duration-200"
+                className="group w-full border border-border rounded-md overflow-hidden flex flex-col bg-card-bg hover:border-[var(--muted)] hover:shadow-[0_2px_8px_rgba(0,0,0,0.04)] transition-all duration-200"
               >
                 {product.previewImageUrl ? (
                   <div className="aspect-video bg-background">

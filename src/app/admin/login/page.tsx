@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { ThemeToggle } from "@/app/theme-toggle";
 import { ShelfLogo } from "@/app/shelf-logo";
 
 export default function AdminLoginPage() {
@@ -42,7 +41,6 @@ export default function AdminLoginPage() {
       <nav className="border-b border-border">
         <div className="max-w-6xl mx-auto px-6 h-14 flex items-center justify-between">
           <ShelfLogo />
-          <ThemeToggle />
         </div>
       </nav>
 
