@@ -1,95 +1,77 @@
 # Shelf
 
-A minimal digital product storefront. Admin lists products, visitors pay via Stripe Checkout, and receive time-limited download links. No buyer accounts — email-based delivery.
+Minimal digital product storefront. Admin uploads products, customers pay via Stripe Checkout, and receive time-limited download links by email. No buyer accounts required.
+
+**Stack:** `Next.js 14 · TypeScript · Auth.js v5 · Drizzle ORM · Turso (SQLite) · Stripe · Tailwind CSS`
+
+**Live:** https://shelf-bitcoineo.vercel.app
+
+---
+
+## Why I built this
+
+I wanted to understand how a real payment flow works end to end: Stripe Checkout Sessions, webhook signature verification, and order completion driven by events rather than redirects. The download token system adds a second layer of interest — each purchase generates a nanoid token with a 48-hour expiry and a 3-download cap, enforced at the database level.
 
 ## Features
 
-- Admin dashboard — create and manage digital products
-- Stripe Checkout integration with webhook-driven order completion
-- Time-limited download links (48h expiry, 3 downloads max)
-- Light/dark mode toggle
-- Fully responsive design
-
-## Tech Stack
-
-- **Next.js 14** — App Router, TypeScript strict
-- **Drizzle ORM + Turso** — SQLite at the edge
-- **Auth.js v5** — admin-only credentials auth
-- **Stripe** — Checkout Sessions + webhooks
-- **Tailwind CSS** — utility-first styling
-- **pnpm** — package manager
+- **Admin dashboard** Create and manage digital products with file URLs and pricing
+- **Stripe Checkout** Full payment flow with Checkout Sessions
+- **Webhook-driven completion** Orders complete via verified Stripe, not redirect
+- **Time-limited downloads** 48h expiry, 3 downloads max per purchase, token-based
+- **No buyer accounts** Customers receive a download link directly, no registration
+- **Admin auth** Credentials-only login via Auth.js v5, no public signup
+- **Dark / Light theme** System preference with toggle
 
 ## Setup
 
-### 1. Install dependencies
+    pnpm install
+    cp .env.example .env.local
 
-```bash
-pnpm install
-```
+Fill in your .env.local:
 
-### 2. Environment variables
+    DATABASE_URL=              # Turso database URL (libsql://...)
+    DATABASE_AUTH_TOKEN=       # Turso auth token
+    AUTH_SECRET=               # openssl rand -base64 32
+    STRIPE_SECRET_KEY=         # sk_test_...
+    STRIPE_PUBLISHABLE_KEY=    # pk_test_...
+    STRIPE_WEBHOOK_SECRET=     # whsec_... (from Stripe CLI or dashboard)
+    NEXT_PUBLIC_BASE_URL=      # http://localhost:3000 for dev
 
-Copy `.env.example` to `.env.local` and fill in the values:
+Run migrations and seed the admin user:
 
-```bash
-cp .env.example .env.local
-```
+    pnpm db:generate
+    pnpm db:migrate
+    pnpm db:seed
 
-| Variable | Description |
-|----------|-------------|
-| `DATABASE_URL` | Turso database URL (`libsql://...`) |
-| `DATABASE_AUTH_TOKEN` | Turso auth token |
-| `AUTH_SECRET` | Random string for Auth.js JWT signing |
-| `STRIPE_SECRET_KEY` | Stripe secret key (`sk_test_...`) |
-| `STRIPE_PUBLISHABLE_KEY` | Stripe publishable key (`pk_test_...`) |
-| `STRIPE_WEBHOOK_SECRET` | Stripe webhook signing secret (`whsec_...`) |
-| `NEXT_PUBLIC_BASE_URL` | Your app URL (e.g. `http://localhost:3000`) |
+Default admin credentials: admin@shelf.dev / admin123
 
-### 3. Database
+Forward Stripe webhooks locally:
 
-Generate and run migrations:
+    stripe listen --forward-to localhost:3000/api/webhooks/stripe
 
-```bash
-pnpm db:generate
-pnpm db:migrate
-```
+Start dev server:
 
-Seed the admin user:
+    pnpm dev
 
-```bash
-pnpm db:seed
-```
-
-Default admin credentials: `admin@shelf.dev` / `admin123`
-
-### 4. Stripe webhook
-
-For local development, use the Stripe CLI to forward webhooks:
-
-```bash
-stripe listen --forward-to localhost:3000/api/webhooks/stripe
-```
-
-Copy the webhook signing secret it prints to `STRIPE_WEBHOOK_SECRET` in `.env.local`.
-
-### 5. Run
-
-```bash
-pnpm dev
-```
+Open http://localhost:3000
 
 ## Architecture
 
-```
-src/
-├── app/           → Pages and API routes (App Router)
-├── db/            → Schema, migrations, seed script
-└── lib/           → Business logic (products, orders, downloads, stripe, checkout)
-```
+All database queries live in src/lib/, never in components or routes. Lib functions return { data, error } and never throw. The webhook handler at /api/webhooks/stripe verifies the Stripe signature before processing any event.
 
-All database queries live in `src/lib/`, never in components or routes. Lib functions return `{ data, error }` — never throw.
+    src/
+      app/           Pages and API routes (App Router)
+      db/            Schema, migrations, seed script
+      lib/           Business logic (products, orders, downloads, stripe, checkout)
 
-## Live URL
+## Deploy to Vercel
 
-<!-- Replace with your deployed URL -->
-`https://your-app.vercel.app`
+1. Push to GitHub
+2. Import the repo on Vercel
+3. Add all environment variables
+4. Set up a Stripe webhook endpoint pointing to your-domain.vercel.app/api/webhooks/stripe
+5. Deploy
+
+## GitHub Topics
+
+`nextjs` `typescript` `stripe` `payments` `drizzle-orm` `turso` `sqlite` `authjs` `tailwind` `ecommerce` `digital-products`
