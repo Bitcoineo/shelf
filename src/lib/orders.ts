@@ -116,7 +116,7 @@ export async function getAllOrders(
     if (filter && filter !== "all") {
       conditions.push(eq(orders.status, filter as "pending" | "completed" | "failed"));
     }
-    if (search && search.trim()) {
+    if (search?.trim()) {
       conditions.push(like(orders.customerEmail, `%${search.trim()}%`));
     }
 

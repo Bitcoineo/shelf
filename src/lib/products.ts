@@ -18,23 +18,23 @@ type CreateProductInput = {
 
 type Product = typeof products.$inferSelect;
 
+function validateProductInput(input: CreateProductInput): string | null {
+  if (!input.name.trim()) return "Name is required";
+  if (!input.description.trim()) return "Description is required";
+  if (!Number.isInteger(input.priceInCents) || input.priceInCents < 0) {
+    return "Price must be a non-negative integer (cents)";
+  }
+  if (!input.fileUrl.trim()) return "File URL is required";
+  return null;
+}
+
 // ─── Create ─────────────────────────────────────────────────────────────────
 
 export async function createProduct(
   input: CreateProductInput
 ): Promise<{ data?: Product; error?: string }> {
-  if (!input.name.trim()) {
-    return { error: "Name is required" };
-  }
-  if (!input.description.trim()) {
-    return { error: "Description is required" };
-  }
-  if (!Number.isInteger(input.priceInCents) || input.priceInCents < 0) {
-    return { error: "Price must be a non-negative integer (cents)" };
-  }
-  if (!input.fileUrl.trim()) {
-    return { error: "File URL is required" };
-  }
+  const validationError = validateProductInput(input);
+  if (validationError) return { error: validationError };
 
   const stripeResult = await createStripeProduct(
     input.name.trim(),
@@ -42,9 +42,11 @@ export async function createProduct(
     input.priceInCents
   );
 
-  if (stripeResult.error) {
-    return { error: `Stripe: ${stripeResult.error}` };
+  if (stripeResult.error || !stripeResult.data) {
+    return { error: `Stripe: ${stripeResult.error ?? "Unknown error"}` };
   }
+
+  const { stripeProductId, stripePriceId } = stripeResult.data;
 
   try {
     const db = getDb();
@@ -59,8 +61,8 @@ export async function createProduct(
         priceInCents: input.priceInCents,
         fileUrl: input.fileUrl.trim(),
         previewImageUrl: input.previewImageUrl?.trim() || null,
-        stripeProductId: stripeResult.data!.stripeProductId,
-        stripePriceId: stripeResult.data!.stripePriceId,
+        stripeProductId,
+        stripePriceId,
         isActive: 1,
         createdAt: now,
         updatedAt: now,
@@ -119,18 +121,8 @@ export async function updateProduct(
   id: string,
   input: CreateProductInput
 ): Promise<{ data?: Product; error?: string }> {
-  if (!input.name.trim()) {
-    return { error: "Name is required" };
-  }
-  if (!input.description.trim()) {
-    return { error: "Description is required" };
-  }
-  if (!Number.isInteger(input.priceInCents) || input.priceInCents < 0) {
-    return { error: "Price must be a non-negative integer (cents)" };
-  }
-  if (!input.fileUrl.trim()) {
-    return { error: "File URL is required" };
-  }
+  const validationError = validateProductInput(input);
+  if (validationError) return { error: validationError };
 
   const { data: current, error: fetchError } = await getProductById(id);
   if (fetchError) return { error: fetchError };
@@ -150,8 +142,8 @@ export async function updateProduct(
     newPriceInCents: priceChanged ? input.priceInCents : null,
   });
 
-  if (stripeResult.error) {
-    return { error: `Stripe: ${stripeResult.error}` };
+  if (stripeResult.error || !stripeResult.data) {
+    return { error: `Stripe: ${stripeResult.error ?? "Unknown error"}` };
   }
 
   try {
@@ -165,7 +157,7 @@ export async function updateProduct(
         priceInCents: input.priceInCents,
         fileUrl: input.fileUrl.trim(),
         previewImageUrl: input.previewImageUrl?.trim() || null,
-        stripePriceId: stripeResult.data!.stripePriceId,
+        stripePriceId: stripeResult.data.stripePriceId,
         updatedAt: new Date(),
       })
       .where(eq(products.id, id))

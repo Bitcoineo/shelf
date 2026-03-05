@@ -42,11 +42,6 @@ body {
   background-clip: text;
 }
 
-.rainbow-divider {
-  height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(0, 112, 243, 0.3), rgba(124, 58, 237, 0.3), rgba(236, 72, 153, 0.2), transparent);
-}
-
 .spinner {
   border-color: var(--border);
   border-top-color: var(--fg);
